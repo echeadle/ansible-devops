@@ -1,0 +1,6 @@
+sudo useradd -m devops
+sudo passwd devops
+cd /home/devops/
+mkdir .ssh
+chown devops:devops .ssh/
+chmod 700 .ssh

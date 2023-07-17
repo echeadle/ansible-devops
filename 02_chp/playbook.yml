@@ -1,0 +1,35 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+  - name: Only run "update_cache=yes" if the last one is more than 3600 seconds ago
+    ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+  - name: Update All packages to their latest version
+    ansible.builtin.apt:
+      name: "*"
+      state: latest
+
+  - name: Ensure chrony (for time synchronization) is installed.
+    ansible.builtin.apt:
+      pkg:
+      - chrony
+      - build-essential
+      - dkms
+      - linux-headers-generic 
+
+  - name: Ensure chrony is running.
+    service:
+      name: chronyd
+      state: started
+      enabled: yes
+
+# The same as the above play, but in super-compact form!
+- hosts: all
+  become: yes
+  tasks:
+  - apt: name=chrony state=present
+  - service: name=chronyd state=started enabled=yes
